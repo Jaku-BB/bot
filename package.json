@@ -1,0 +1,47 @@
+{
+  "name": "d.js-template",
+  "description": "A simple and easy to use template for Discord bots using the discord.js library.",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "start:migrate": "pnpm dlx prisma migrate deploy && pnpm run start",
+    "dev": "concurrently \"tsc --watch\" \"tsc-alias --watch\" \"node --env-file .env --watch dist/index.js | pnpm run prettify-logs\"",
+    "build": "tsc",
+    "prettify-logs": "pino-pretty --translateTime \"SYS:dd-mm-yyyy|HH:MM:ss\" --customLevels debug:10,information:20,error:30 --customColors debug:gray,information:blue,error:red",
+    "register-application-commands": "node --env-file .env dist/register-application-commands.js",
+    "prepare": "husky install"
+  },
+  "author": "Jakub Bukała",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "5.8.1",
+    "croner": "^8.0.2",
+    "discord-api-types": "^0.37.67",
+    "discord.js": "^14.14.1",
+    "inquirer": "^9.2.15",
+    "pino": "^8.17.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "concurrently": "^9.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-perfectionist": "^2.5.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "husky": "^9.0.11",
+    "pino-pretty": "^10.3.1",
+    "prettier": "^3.2.5",
+    "prisma": "^5.8.1",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.3.3"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20.6.0"
+  }
+}
