@@ -7,12 +7,14 @@ on:
       - package.json
       - pnpm-lock.yaml
       - tsconfig.json
+      - .github/workflows/test-and-deploy.yml
   pull_request:
     paths:
       - src/**
       - package.json
       - pnpm-lock.yaml
       - tsconfig.json
+      - .github/workflows/test-and-deploy.yml
 
 jobs:
   test:
