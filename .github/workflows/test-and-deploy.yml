@@ -1,0 +1,75 @@
+name: Test and Deploy
+
+on:
+  push:
+    paths:
+      - src/**
+      - package.json
+      - pnpm-lock.yaml
+      - tsconfig.json
+      - .github/workflows/test-and-deploy.yml
+  pull_request:
+    paths:
+      - src/**
+      - package.json
+      - pnpm-lock.yaml
+      - tsconfig.json
+      - .github/workflows/test-and-deploy.yml
+
+env:
+  IMAGE_NAME: ghcr.io/jaku-bb/bot:latest
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js v20.6.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.6.0
+
+      - name: Install dependencies
+        run: |
+          npm install --global pnpm
+          pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Push to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build . --tag ${{ env.IMAGE_NAME }}
+          docker push ${{ env.IMAGE_NAME }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          script: |
+            sudo docker pull ${{ env.IMAGE_NAME }}
