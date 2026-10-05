@@ -37,7 +37,7 @@
     "pino-pretty": "^10.3.1",
     "prettier": "^3.2.5",
     "prisma": "^5.8.1",
-    "tsc-alias": "^1.8.8",
+    "tsc-alias": "^1.9.7",
     "typescript": "^5.3.3"
   },
   "type": "module",
